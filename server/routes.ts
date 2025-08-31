@@ -95,7 +95,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/items", isAuthenticated, upload.single("photo"), async (req: any, res) => {
+  app.post("/api/items", isAuthenticated, upload.fields([
+    { name: 'photo_0', maxCount: 1 },
+    { name: 'photo_1', maxCount: 1 },
+    { name: 'photo_2', maxCount: 1 }
+  ]), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
@@ -104,10 +108,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only staff can add items" });
       }
 
+      // Handle multiple photos
+      let photoUrl = null;
+      if (req.files) {
+        const photos = [];
+        for (let i = 0; i < 3; i++) {
+          const photoField = `photo_${i}`;
+          if (req.files[photoField] && req.files[photoField][0]) {
+            photos.push(`/uploads/${req.files[photoField][0].filename}`);
+          }
+        }
+        if (photos.length > 0) {
+          photoUrl = photos[0]; // For now, just use the first photo as main photo
+        }
+      }
+
       const itemData = insertItemSchema.parse({
         ...req.body,
         foundById: userId,
-        photoUrl: req.file ? `/uploads/${req.file.filename}` : null,
+        photoUrl: photoUrl,
       });
 
       const item = await storage.createItem(itemData);

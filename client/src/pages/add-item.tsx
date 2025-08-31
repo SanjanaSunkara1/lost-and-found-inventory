@@ -16,13 +16,14 @@ import { Camera, Save, X } from "lucide-react";
 import { z } from "zod";
 
 const formSchema = insertItemSchema.extend({
-  photo: z.any().optional(),
+  photos: z.any().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function AddItem() {
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -43,12 +44,14 @@ export default function AddItem() {
     mutationFn: async (data: FormData) => {
       const formData = new FormData();
       
+      // Add photos to form data
+      photoFiles.forEach((file, index) => {
+        formData.append(`photo_${index}`, file);
+      });
+      
+      // Add other form data
       Object.entries(data).forEach(([key, value]) => {
-        if (key === "photo" && value instanceof FileList) {
-          if (value.length > 0) {
-            formData.append("photo", value[0]);
-          }
-        } else if (value !== undefined && value !== null) {
+        if (key !== "photos" && value !== undefined && value !== null) {
           formData.append(key, value.toString());
         }
       });
@@ -63,7 +66,8 @@ export default function AddItem() {
       });
       queryClient.invalidateQueries({ queryKey: ["/api/items"] });
       form.reset();
-      setPhotoPreview(null);
+      setPhotoPreviews([]);
+      setPhotoFiles([]);
     },
     onError: (error: Error) => {
       toast({
@@ -75,14 +79,24 @@ export default function AddItem() {
   });
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const newFiles = Array.from(files).slice(0, 3 - photoFiles.length);
+      
+      newFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPhotoPreviews(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+        setPhotoFiles(prev => [...prev, file]);
+      });
     }
+  };
+
+  const removePhoto = (index: number) => {
+    setPhotoPreviews(prev => prev.filter((_, i) => i !== index));
+    setPhotoFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const onSubmit = (data: any) => {
@@ -102,54 +116,65 @@ export default function AddItem() {
             {/* Photo Upload */}
             <div>
               <Label className="text-sm font-medium text-foreground mb-2 block">
-                Item Photo *
+                Item Photos (Max 3)
               </Label>
-              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
-                {photoPreview ? (
-                  <div className="space-y-4">
-                    <img 
-                      src={photoPreview} 
-                      alt="Preview" 
-                      className="mx-auto max-h-48 rounded-lg object-cover"
-                    />
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={() => {
-                        setPhotoPreview(null);
-                        form.setValue("photo", undefined);
-                      }}
-                      data-testid="button-remove-photo"
-                    >
-                      Remove Photo
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <Camera className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">Drag and drop photo here, or click to browse</p>
-                    <Button type="button" asChild data-testid="button-choose-photo">
-                      <label>
-                        Choose Photo
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          {...form.register("photo")}
-                          onChange={handlePhotoChange}
-                        />
-                      </label>
-                    </Button>
-                    <p className="text-xs text-muted-foreground mt-2">Maximum file size: 5MB</p>
-                  </>
-                )}
-              </div>
+              
+              {/* Display existing photos */}
+              {photoPreviews.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  {photoPreviews.map((preview, index) => (
+                    <div key={index} className="relative">
+                      <img 
+                        src={preview} 
+                        alt={`Preview ${index + 1}`} 
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <Button 
+                        type="button" 
+                        variant="destructive" 
+                        size="sm"
+                        className="absolute top-2 right-2 h-6 w-6 p-0"
+                        onClick={() => removePhoto(index)}
+                        data-testid={`button-remove-photo-${index}`}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Upload new photos */}
+              {photoFiles.length < 3 && (
+                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+                  <Camera className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">
+                    {photoFiles.length === 0 
+                      ? "Add photos of the item (recommended for better identification)"
+                      : `Add ${3 - photoFiles.length} more photo${3 - photoFiles.length > 1 ? 's' : ''}`
+                    }
+                  </p>
+                  <Button type="button" asChild data-testid="button-choose-photos">
+                    <label>
+                      Choose Photos
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={handlePhotoChange}
+                      />
+                    </label>
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-2">Maximum file size: 5MB each. JPG, PNG, GIF supported.</p>
+                </div>
+              )}
             </div>
 
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="name">Item Name *</Label>
+                <Label htmlFor="name">Item Title *</Label>
                 <Input
                   id="name"
                   placeholder="e.g., iPhone 15, Blue Hoodie, Math Textbook"

@@ -9,13 +9,13 @@ import ItemCard from "@/components/item-card";
 
 export default function Inventory() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("all");
   const [dateRange, setDateRange] = useState("");
 
   const { data: items, isLoading } = useQuery({
     queryKey: ["/api/items", { 
       search: searchTerm, 
-      category: category || undefined,
+      category: category === "all" ? undefined : category,
       status: "active"
     }],
   });
@@ -52,7 +52,7 @@ export default function Inventory() {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="electronics">Electronics</SelectItem>
                   <SelectItem value="clothing">Clothing</SelectItem>
                   <SelectItem value="books">Books</SelectItem>
@@ -69,7 +69,7 @@ export default function Inventory() {
                   <SelectItem value="30">Last 30 days</SelectItem>
                   <SelectItem value="7">Last 7 days</SelectItem>
                   <SelectItem value="1">Today</SelectItem>
-                  <SelectItem value="">All time</SelectItem>
+                  <SelectItem value="all">All time</SelectItem>
                 </SelectContent>
               </Select>
               
