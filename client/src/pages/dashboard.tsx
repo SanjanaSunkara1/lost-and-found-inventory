@@ -12,6 +12,7 @@ import {
   Download
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import ItemCard from "@/components/item-card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -176,36 +177,12 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
               <p className="text-sm text-muted-foreground">Latest additions to inventory</p>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="grid gap-4">
                 {recentItemsSlice.length === 0 ? (
                   <p className="text-muted-foreground text-center py-8">No items found</p>
                 ) : (
                   recentItemsSlice.map((item: any) => (
-                    <div 
-                      key={item.id} 
-                      className="flex items-center space-x-4 p-4 hover:bg-accent rounded-lg transition-colors"
-                      data-testid={`item-${item.id}`}
-                    >
-                      {item.photoUrl && (
-                        <img 
-                          src={item.photoUrl} 
-                          alt={item.name}
-                          className="w-12 h-12 rounded-lg object-cover"
-                        />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
-                        <p className="text-sm text-muted-foreground">Found in {item.location}</p>
-                      </div>
-                      <div className="text-right">
-                        <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-md font-medium">
-                          {item.category}
-                        </span>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {new Date(item.dateFound).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
+                    <ItemCard key={item.id} item={item} />
                   ))
                 )}
               </div>
