@@ -1,0 +1,252 @@
+
+
+
+
+
+IB COMP SCI HL
+
+PROJECT NAME: Lost & Found Inventory
+
+Ramachandran, Sunkara, Vardhineedi
+
+
+
+
+
+
+
+
+
+
+Criterion A: Planning
+The Scenario
+Westwood High School is seeking a digital solution to manage its Lost & Found inventory, which is currently maintained through a physical bin in the front office and a handwritten log. The existing system is inefficient, inconsistent, and often results in lost items remaining unclaimed or being discarded. Staff members—including front office personnel, custodians, and teachers—frequently find and submit items, but there is no standardized process for logging, tracking, or notifying students.
+During the consultation (see Appendix A), Principal Martinez explained that the school’s biggest concern is the lack of visibility and accountability in the current system. Students rarely check the Lost & Found, and staff spend excessive time trying to match items with their owners. The school wants a centralized, easy-to-use app that allows staff to upload item details (including photos, descriptions, and location found), categorize items, and manage claim status. Students should be able to browse the inventory, submit claim requests, and receive notifications when their items are found or approved.
+The app must be compatible with both mobile devices and desktop computers, as staff will use smartphones to upload items on the go, while students will access the system via their school-issued Chromebooks or personal phones. The solution should include secure login for both staff and students, a searchable and filterable item database, and automated archiving of unclaimed items after a set period (e.g., 30 days). Additionally, the school is interested in analytics features to track trends in lost items and improve operational efficiency.
+The lack of a digital system is negatively impacting student satisfaction, staff workload, and the overall organization of the school. A streamlined, user-friendly app is necessary to improve item recovery, reduce administrative burden, and foster a more accountable and transparent Lost & Found process.
+
+
+
+
+
+Rationale for the Solution
+The most effective solution for Westwood High School is a cross-platform Lost & Found inventory application built using C# with .NET MAUI, supported by a SQLite database for local storage.
+This approach is appropriate because:
+Cross-platform access .NET MAUI runs natively on iOS, Android, Windows, and macOS, ensuring that both staff and students can access the app from school-issued Chromebooks, personal smartphones, and office desktops. This flexibility supports real-time item logging and browsing from anywhere on campus.
+Ease of use and speed The app will launch quickly and feature a streamlined interface for uploading items, browsing inventory, and managing claims. Staff can snap and upload photos in seconds, while students can check for lost items between classes or during lunch without navigating complex menus.
+Offline functionality Using SQLite for local data storage ensures that staff can log items even in areas with poor connectivity (e.g., gym, field, or parking lot). The app will sync automatically when internet access is restored, maintaining a seamless experience.
+Security awareness Secure login credentials for staff and students will protect sensitive data. Staff will have access to claim approvals and student information, while students will only see public item listings. Optional PIN protection can be added for shared devices in the front office or kiosk stations.
+
+Direct benefit to the school community By organizing lost items, tracking claim status, and providing searchable access, the app will:
+Reduce staff workload and manual logging
+Increase item recovery rates
+Improve student satisfaction
+Provide analytics for operational insights
+Establish a transparent and accountable system
+
+
+
+
+Proposed Solution
+
+The Lost & Found Inventory application will include the following features:
+
+Secure User Authentication: Access will be controlled by secure login credentials for both staff and students. Staff will have administrative privileges, such as adding and managing items, while students can browse inventory and submit claims.
+
+Item Logging and Management: Staff members can easily add items to the digital inventory. Features include uploading photos, adding a detailed description, specifying the category (e.g., electronics, books), and noting the location where the item was found.
+
+Search and Filter Inventory: Students can browse the inventory using a search bar with advanced filters for keywords, categories, and date ranges. This helps them quickly find potential matches for their lost items.
+
+Claim Management and Verification: Students can submit a claim for an item they believe is theirs. Staff can then review and approve the claim, potentially requesting additional verification details to ensure the item is returned to the rightful owner.
+
+Reminders and Notifications: The app will send automated alerts to students and staff. Students can receive notifications when a new item matching their description is logged, or when the status of their claim is updated. Staff can be notified of new claims to review.
+
+Automated Archiving: To keep the inventory current and manageable, unclaimed items will be automatically archived after a customizable, pre-set period (e.g., 30 days).
+
+Analytics and Dashboard View: The dashboard will provide a central screen with an overview of the current inventory, pending claims, and analytics to track trends in lost items and recovery rates. This gives administrators insight into the system's efficiency.
+
+
+
+This solution provides Westwood High School with a comprehensive, user-friendly, and transparent tool to manage its Lost & Found inventory, significantly reducing staff workload, increasing item recovery rates, and improving student satisfaction.
+
+
+
+
+Criteria for Success (CfS)
+Staff can log a new item, including a photo, description, and location, in under 60 seconds. This performance will be measured during user acceptance testing with 10 randomly selected staff members.
+
+Students can successfully search and filter the inventory to find a previously logged lost item in at least 95% of test scenarios.
+
+Students can submit a claim for an item. The claim must be properly logged, linked to the student account, and visible to staff for review within 30 seconds of submission, verified over 20 test cases.
+
+The application's secure login system correctly authenticates users and applies the appropriate access rights for their staff or student role during testing, maintaining system integrity across various access attempts.
+
+The system delivers a notification to relevant users (e.g., student notified of claim update, staff notified of new claim) within 5 minutes of a triggering event, confirmed by testing of 10 automated alerts.
+
+The automated archiving system successfully removes unclaimed items from the active inventory after the set time period, verified through the archiving of three test items after 30 days.
+
+The dashboard view accurately displays the number of pending claims and new items logged, updating within 5 seconds of a data change. This will be confirmed by observers during test case execution.
+
+A post-implementation survey will show an increase in both student and staff satisfaction with the Lost & Found process, with at least 80% of users reporting a positive experience with the new system.
+
+
+
+
+
+
+
+
+
+
+
+APPENDIX A
+
+Date: August 27, 2025
+
+Time: 4:30 PM
+
+Location: Principal’s Office
+
+Participants
+Developer (Me)
+Client (Principal of Westwood High School, responsible for school Lost and Found)
+
+
+Transcript of Consultation (Single Session)
+Me:
+Thanks for making time today, Principal Martinez. I wanted to go over everything we’ve discussed about the Lost & Found app—just to make sure we’re aligned before I start building. I’ll walk Me through the current problems, what the app will do, and how it’ll solve those issues.
+Principal:
+Sounds good. I’ve been looking forward to this. We really need something better than the bin system.
+Me:
+Yeah, so let’s start there. Right now, we've got a physical bin near the front office. If someone finds something, they drop it in. If a student loses something, they’re supposed to check the bin. But there’s no digital record, no searchable inventory, and no notifications.
+Principal:
+Exactly. And most of the time, students don’t even bother checking unless it’s something really valuable. We’ve had phones sit in there for days.
+Me:
+Right. And staff are spending time manually trying to match items with students. There’s no accountability—no way to track who claimed what or when. And no analytics to help me understand what’s getting lost most often or where.
+Principal:
+That’s been a huge pain. We’re wasting time, and we’re still not solving the problem.
+Me:
+So here’s what I’m proposing. We build a mobile-friendly app that works on both smartphones and Chromebooks. Staff can upload items with a photo, description, and location tag. Students can browse, search, and submit claims directly through the app.
+Principal:
+That already sounds like a massive upgrade.
+Me:
+We’ll have secure login using school credentials. Students and staff will have different access levels. Students can only claim items, while staff can approve or reject claims and manage the inventory.
+Principal:
+Perfect. That separation is important. We don’t want students messing with the backend.
+Me:
+Exactly. Items will automatically archive after 30 days. Once archived, they’ll be flagged for donation or disposal. That way, we're not holding onto stuff forever.
+Principal:
+Makes sense. We’ve got old jackets and water bottles that have been sitting there since last semester.
+Me:
+Students will get notifications when something they’ve claimed is uploaded or approved. We’ll set default reminders for 7 PM the night before and 6:30 AM the day of. There’s also a snooze option for 10 minutes.
+Principal:
+That’s great. Kids forget everything unless it pops up on their phone.
+Me:
+Exactly. On the dashboard, staff will see stats—how many items were uploaded, claimed, archived. Students will see their own claims, pending approvals, and recent uploads. We’re also building in analytics so I can track trends—like what’s getting lost most often and where.
+Principal:
+That’s gold. We’ve never had that kind of insight before.
+Me:
+Settings will include light/dark mode, notification preferences, and the archive threshold—default is 30 days, but Me can change it if needed.
+Principal:
+This is exactly what we’ve been missing. If the app does all this, it’ll save our staff hours and actually help students get their stuff back.
+Me:
+Awesome. That’s the goal. We’re keeping it simple, fast, and useful—so it actually gets used. If you're good with everything we’ve covered, I’ll move forward with this scope.
+Principal:
+Yep, I’m all in. Let’s build it.
+
+Me:
+Great. Just to dig a little deeper—when staff upload an item, they’ll enter a few quick fields: photo, item name, category, description, and where it was found. We’ll keep it fast so it doesn’t feel like a chore.
+Principal:
+Good. If it takes too long, they won’t use it.
+Me:
+Exactly. We’ll also auto-suggest categories like clothing, electronics, books, accessories, and so on. That way, it’s consistent and easy to filter later.
+Principal:
+Smart. That’ll help students narrow things down when they’re searching.
+Me:
+For claims, students will tap on an item, hit “Claim,” and enter a short note—like “This is my hoodie, I left it in the gym.” Staff will get a notification and can approve or reject it with a note. All claims will be logged.
+Principal:
+That’s great. We’ve had students try to claim stuff that wasn’t theirs before. Having a record helps.
+Me:
+Exactly. And if an item gets multiple claims, staff can see all of them and choose the most credible one. We’ll also let staff mark items as “high priority” if they’re valuable—like phones or wallets—and those will show up at the top of the dashboard.
+Principal:
+Nice. That’ll help us act faster on the important stuff.
+Me:
+For notifications, students can opt in to get alerts when new items are uploaded in categories they care about. So if someone loses a pair of AirPods, they can get notified when any electronics are added.
+Principal:
+That’s clever. It keeps them engaged without spamming them.
+Me:
+Exactly. And we’ll include a “Remind Me Later” button so they can snooze alerts if they’re in class or busy.
+Principal:
+I love it. That kind of flexibility makes a big difference.
+Me:
+Now, about the dashboard. For staff, it’ll show total items uploaded, claimed, archived, and flagged for donation. I'll also see top categories—like “most lost item this month”—and heatmaps of where items are most often found.
+Principal:
+Wait, heatmaps?
+Me:
+Yeah! We’ll track where items are found—gym, cafeteria, hallway—and visualize it. That way, I can see if certain areas are hotspots and maybe add signage or bins there.
+Principal:
+That’s brilliant. We’ve never had data like that.
+Me:
+For students, their dashboard will show recent uploads, their claims, and claim status—pending, approved, rejected. They’ll also see a countdown for how long an item will stay in the system before it’s archived.
+Principal:
+That’s helpful. It gives them a sense of urgency.
+Me:
+Exactly. We want to encourage quick action. And for staff, we’ll add a “bulk archive” button so I can clean up old items in one go.
+Principal:
+That’ll save us a ton of time.
+Me:
+We’ll also include an optional CSV export feature later on—so I can download item logs for reporting or audits.
+Principal:
+Nice-to-have, but yeah, that could be useful.
+Me:
+One last thing—privacy. We’re keeping it tight. No personal data beyond login ID and claim history. And we’ll make sure everything’s stored securely. No photos of students, no sensitive info.
+Principal:
+Good. That’s important. We don’t want any issues there.
+Principal:
+That’s exactly what we need. If it does all that, I feel confident it’ll actually get used—and we’ll finally have a system that works.
+Me: Alright Principal Martinez, just to quickly read back what we’re building:
+Developer’s Final Summary (Read Back to Client)
+Current Tools:
+You use a physical bin near the front office. If someone finds something, they drop it in. If a student loses something, they’re supposed to check the bin. 
+Primary Pain Points:
+No accountability—no way to track who claimed what or when
+No digital record, no searchable inventory, and no notifications.
+No analytics to understand what’s getting lost most often or where.
+Doesn’t want long forms
+What You Need:
+A mobile-friendly Lost & Found app that works on both smartphones and Chromebooks
+Staff login to upload items with photo, description, category, and location
+Students login to browse, search, and submit claims
+Secure role-based access using school credentials
+Items auto-archive after 30 days, flagged for donation or disposal
+Notifications for students when their claimed item is uploaded or approved
+Default reminders at 7 PM the night before and 6:30 AM the day of, with a 10-minute snooze option
+Dashboards for staff and students:
+Staff see upload stats, claim approvals, archive status, and item trends
+Students see their claims, recent uploads, and countdowns for item expiration
+Analytics to track what’s getting lost most often and where
+Settings for light/dark mode, notification preferences, and archive timing
+Optional CSV export for item logs later on
+How the App Will Solve These Pain Points:
+No accountability - Staff can track who claimed what.
+No digital record, no searchable inventory, and no notifications. - Notifications for new listed items and a record of claims.
+No analytics to understand what’s getting lost most often or where - Dashboard with statistics of what's getting lost most often and where.
+Doesn’t want long forms - Quick and easy forms with a few fields
+Proposed Solution (v1 Scope):
+Secure User Authentication: Staff and students log in using their existing school credentials, with access controlled by user role.
+Item Logging: Staff can easily add items with a photo, description, category, and location found via a simple, mobile-friendly form.
+Search and Filter Inventory: Students can browse or search the real-time inventory using filters for keywords, categories, and date ranges.
+Claim Submission: Students can submit claims for items they believe are theirs through the app.
+Claim Review: Staff can review and approve or reject pending student claims from a central dashboard.
+Automated Notifications: The system sends automated alerts to students and staff regarding item matches, claim status updates, and new claim submissions.
+Timed Archiving: Items are automatically moved to an archived status after 30 days and flagged for donation or disposal.
+Staff Dashboard: Provides an overview of upload stats, claim approvals, archive status, and analytics on item trends.
+
+
+Me:
+I’ll start building based on this scope. I’ll check in with you once I’ve got a working prototype, and we can test it with a few staff and students.
+Principal (confirmation):
+Perfect. Let’s make it happen.
+
+
+
