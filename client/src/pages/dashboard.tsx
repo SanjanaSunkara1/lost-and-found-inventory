@@ -213,7 +213,7 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
           </Card>
         </div>
 
-        {(user as any)?.role === "staff" && (
+        {user && (
           <Card>
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
