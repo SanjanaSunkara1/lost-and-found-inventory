@@ -220,9 +220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
-      if (!user) {
-        return res.status(403).json({ message: "Must be logged in to add items" });
-      }
+      // Anyone can add items - no role restrictions
 
       // Handle multiple photos
       let photoUrl = null;
@@ -239,18 +237,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Parse form data properly
-      const formData = {
-        name: req.body.name,
-        description: req.body.description,
-        category: req.body.category,
-        location: req.body.location,
-        dateFound: req.body.dateFound,
+      // Debug: log the incoming request body
+      console.log('Request body:', req.body);
+      console.log('Request files:', req.files);
+      
+      const itemData = insertItemSchema.parse({
+        ...req.body,
         foundById: userId,
         photoUrl: photoUrl,
-      };
-
-      const itemData = insertItemSchema.parse(formData);
+      });
 
       const item = await storage.createItem(itemData);
       

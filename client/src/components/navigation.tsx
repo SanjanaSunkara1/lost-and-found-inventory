@@ -65,11 +65,6 @@ export default function Navigation({ user, activeTab, onTabChange, tabs }: Navig
                 <h1 className="text-xl font-bold text-primary hover:text-primary/80 transition-colors">Westwood High School</h1>
                 <span className="text-sm text-muted-foreground">Lost & Found</span>
               </div>
-              {user && (
-                <Badge variant="secondary" data-testid="badge-user-role">
-                  {user.role === "staff" ? "Staff" : "Student"}
-                </Badge>
-              )}
             </div>
             
             <div className="flex items-center space-x-4">

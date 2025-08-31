@@ -216,9 +216,7 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
         <Card>
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              {(user as any)?.role === "staff" ? "Staff management tasks" : "Report found items"}
-            </p>
+            <p className="text-sm text-muted-foreground">Add items you've found at school</p>
           </CardHeader>
           <CardContent className="space-y-4">
             <Button 
@@ -227,57 +225,10 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
               data-testid="button-add-item"
             >
               <Plus className="mr-3 h-4 w-4" />
-              {(user as any)?.role === "staff" ? "Add New Item" : "Report Found Item"}
+              Add Item
             </Button>
-            <p className="text-xs text-muted-foreground ml-7">
-              {(user as any)?.role === "staff" 
-                ? "Register a new lost item found at school" 
-                : "Found something? Report it here to help reunite it with its owner"
-              }
-            </p>
+            <p className="text-xs text-muted-foreground ml-7">Found something? Add it here to help reunite it with its owner</p>
             
-            {(user as any)?.role === "staff" && (
-              <>
-                <Button 
-                  variant="secondary" 
-                  className="w-full justify-start"
-                  onClick={() => onTabChange?.("claims")}
-                  data-testid="button-review-claims"
-                >
-                  <Eye className="mr-3 h-4 w-4" />
-                  Review Claims
-                  {(pendingClaims as any[])?.length > 0 && (
-                    <span className="ml-auto bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded-full">
-                      {(pendingClaims as any[]).length}
-                    </span>
-                  )}
-                </Button>
-                <p className="text-xs text-muted-foreground ml-7">Approve or deny student requests for items</p>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => archiveItemsMutation.mutate()}
-                  disabled={archiveItemsMutation.isPending}
-                  data-testid="button-archive-items"
-                >
-                  <Archive className="mr-3 h-4 w-4" />
-                  {archiveItemsMutation.isPending ? "Archiving..." : "Archive Old Items"}
-                </Button>
-                <p className="text-xs text-muted-foreground ml-7">Remove unclaimed items older than 30 days</p>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={handleExportReport}
-                  data-testid="button-export-report"
-                >
-                  <Download className="mr-3 h-4 w-4" />
-                  Export Report
-                </Button>
-                <p className="text-xs text-muted-foreground ml-7">Download CSV file with all item data</p>
-              </>
-            )}
           </CardContent>
         </Card>
       </div>
