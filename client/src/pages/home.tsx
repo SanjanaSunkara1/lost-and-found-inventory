@@ -30,11 +30,9 @@ export default function Home() {
   const tabs = [
     { id: "dashboard", label: "Dashboard", icon: "chart-pie" },
     { id: "inventory", label: "Inventory", icon: "list" },
-    ...((user as any)?.role === "staff" ? [
-      { id: "add-item", label: "Add Item", icon: "plus" },
-      { id: "claims", label: "Claims", icon: "hand-paper" },
-      { id: "analytics", label: "Analytics", icon: "chart-bar" }
-    ] : [])
+    { id: "add-item", label: "Add Item", icon: "plus" },
+    { id: "claims", label: "Claims", icon: "hand-paper" },
+    { id: "analytics", label: "Analytics", icon: "chart-bar" }
   ];
 
   return (
