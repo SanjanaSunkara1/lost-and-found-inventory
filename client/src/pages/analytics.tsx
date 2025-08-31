@@ -199,7 +199,7 @@ export default function Analytics() {
                         data-testid={`location-${stat.location}`}
                       >
                         <div className="flex items-center space-x-3">
-                          <IconComponent className="h-5 w-5 text-chart-1" />
+                          <IconComponent className="h-5 w-5 text-muted-foreground" />
                           <span className="text-foreground font-medium capitalize">
                             {stat.location.replace('-', ' ')}
                           </span>
