@@ -220,8 +220,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
-      if (!user || user.role !== "staff") {
-        return res.status(403).json({ message: "Only staff can add items" });
+      if (!user) {
+        return res.status(403).json({ message: "User not found" });
       }
 
       // Handle multiple photos
