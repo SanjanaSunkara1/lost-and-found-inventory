@@ -59,9 +59,9 @@ export default function Navigation({ user, activeTab, onTabChange, tabs }: Navig
       <nav className="bg-card border-b border-border sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 cursor-pointer" onClick={() => onTabChange("dashboard")} data-testid="logo-home-link">
               <Search className="h-8 w-8 text-primary" />
-              <h1 className="text-xl font-semibold text-foreground">Lost & Found</h1>
+              <h1 className="text-xl font-semibold text-foreground hover:text-primary transition-colors">Lost & Found</h1>
               {user && (
                 <Badge variant="secondary" data-testid="badge-user-role">
                   {user.role === "staff" ? "Staff" : "Student"}
