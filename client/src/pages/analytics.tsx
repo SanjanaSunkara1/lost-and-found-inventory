@@ -174,7 +174,12 @@ export default function Analytics() {
                             </span>
                           </div>
                         </div>
-                        <Progress value={percentage} className="h-2" />
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div 
+                            className="bg-chart-1 h-2 rounded-full transition-all duration-300" 
+                            style={{ width: `${percentage}%` }}
+                          ></div>
+                        </div>
                       </div>
                     );
                   })}
