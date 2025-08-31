@@ -60,7 +60,7 @@ export default function ItemCard({ item }: ItemCardProps) {
 
   const isHighPriority = item.priority === "high";
   const isClaimed = item.status === "claimed";
-  const canClaim = (user as any)?.role === "student" && !isClaimed;
+  const canClaim = user && !isClaimed;
 
   return (
     <Card 

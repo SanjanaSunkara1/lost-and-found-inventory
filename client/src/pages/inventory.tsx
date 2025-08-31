@@ -16,7 +16,7 @@ export default function Inventory() {
     queryKey: ["/api/items", { 
       search: searchTerm, 
       category: category === "all" ? undefined : category,
-      status: "active"
+      status: "available"
     }],
   });
 
