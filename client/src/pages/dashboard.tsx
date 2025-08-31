@@ -110,7 +110,8 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Active Items</p>
+                  <p className="text-sm font-medium text-muted-foreground">Items Available</p>
+                  <p className="text-xs text-muted-foreground">Lost items ready to be claimed</p>
                   <p className="text-2xl font-bold text-foreground">{(analytics as any).totalItems}</p>
                 </div>
                 <div className="bg-chart-1/10 p-3 rounded-full">
@@ -124,7 +125,8 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Pending Claims</p>
+                  <p className="text-sm font-medium text-muted-foreground">Waiting for Review</p>
+                  <p className="text-xs text-muted-foreground">Student claims need staff approval</p>
                   <p className="text-2xl font-bold text-foreground">{(analytics as any).pendingClaims}</p>
                 </div>
                 <div className="bg-chart-3/10 p-3 rounded-full">
@@ -139,6 +141,7 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Items Returned</p>
+                  <p className="text-xs text-muted-foreground">Successfully returned to students</p>
                   <p className="text-2xl font-bold text-foreground">{(analytics as any).itemsReturned}</p>
                 </div>
                 <div className="bg-chart-2/10 p-3 rounded-full">
@@ -152,7 +155,8 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Recovery Rate</p>
+                  <p className="text-sm font-medium text-muted-foreground">Success Rate</p>
+                  <p className="text-xs text-muted-foreground">Percentage of items claimed by owners</p>
                   <p className="text-2xl font-bold text-foreground">{(analytics as any).recoveryRate.toFixed(1)}%</p>
                 </div>
                 <div className="bg-chart-5/10 p-3 rounded-full">
@@ -224,6 +228,7 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
                 <Plus className="mr-3 h-4 w-4" />
                 Add New Item
               </Button>
+              <p className="text-xs text-muted-foreground ml-7">Register a new lost item found at school</p>
               
               <Button 
                 variant="secondary" 
@@ -239,6 +244,7 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
                   </span>
                 )}
               </Button>
+              <p className="text-xs text-muted-foreground ml-7">Approve or deny student requests for items</p>
               
               <Button 
                 variant="outline" 
@@ -248,8 +254,9 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
                 data-testid="button-archive-items"
               >
                 <Archive className="mr-3 h-4 w-4" />
-                Archive Items
+                {archiveItemsMutation.isPending ? "Archiving..." : "Archive Old Items"}
               </Button>
+              <p className="text-xs text-muted-foreground ml-7">Remove unclaimed items older than 30 days</p>
               
               <Button 
                 variant="outline" 
@@ -260,6 +267,7 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
                 <Download className="mr-3 h-4 w-4" />
                 Export Report
               </Button>
+              <p className="text-xs text-muted-foreground ml-7">Download CSV file with all item data</p>
             </CardContent>
           </Card>
         )}
