@@ -4,7 +4,8 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { insertItemSchema, insertClaimSchema, updateClaimSchema, users } from "@shared/schema";
+import { insertItemSchema, insertClaimSchema, updateClaimSchema, signupSchema, loginSchema, users } from "@shared/schema";
+import bcrypt from "bcryptjs";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import multer from "multer";
@@ -41,14 +42,129 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/uploads", express.static(uploadDir));
 
   // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  app.get('/api/auth/user', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      // Check custom session first
+      if ((req.session as any)?.user) {
+        const sessionUser = (req.session as any).user;
+        return res.json(sessionUser);
+      }
+      
+      // Fall back to Replit Auth if available
+      if (req.isAuthenticated && req.isAuthenticated() && req.user?.claims?.sub) {
+        const userId = req.user.claims.sub;
+        const user = await storage.getUser(userId);
+        return res.json(user);
+      }
+      
+      res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Custom signup route
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const result = signupSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Invalid input. Please try again.",
+          errors: result.error.issues.map(issue => issue.message)
+        });
+      }
+
+      const { firstName, lastName, studentId, email, password } = result.data;
+
+      // Check if student ID already exists
+      const existingUser = await storage.getUserByStudentId(studentId);
+      if (existingUser) {
+        return res.status(400).json({ message: "Student ID already registered. Please try again." });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      // Create user
+      const user = await storage.createUserFromSignup({
+        firstName,
+        lastName,
+        studentId,
+        email,
+        password: hashedPassword,
+      });
+
+      res.status(201).json({ message: "Account created successfully", userId: user.id });
+    } catch (error) {
+      console.error("Signup error:", error);
+      res.status(500).json({ message: "Failed to create account. Please try again." });
+    }
+  });
+
+  // Custom logout route
+  app.post("/api/auth/logout", async (req, res) => {
+    try {
+      req.session.destroy((err) => {
+        if (err) {
+          return res.status(500).json({ message: "Failed to logout" });
+        }
+        res.clearCookie('connect.sid');
+        res.json({ message: "Logout successful" });
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
+  // Custom login route
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const result = loginSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid student ID or password. Please try again." });
+      }
+
+      const { studentId, password } = result.data;
+
+      // Get user by student ID
+      const user = await storage.getUserByStudentId(studentId);
+      if (!user || !user.password) {
+        return res.status(401).json({ message: "Invalid student ID or password. Please try again." });
+      }
+
+      // Verify password
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (!validPassword) {
+        return res.status(401).json({ message: "Invalid student ID or password. Please try again." });
+      }
+
+      // Set session
+      (req.session as any).user = {
+        id: user.id,
+        studentId: user.studentId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      };
+
+      res.json({ 
+        message: "Login successful", 
+        user: {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          role: user.role,
+        }
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Login failed. Please try again." });
     }
   });
 

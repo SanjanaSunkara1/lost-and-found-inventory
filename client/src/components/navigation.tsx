@@ -90,7 +90,12 @@ export default function Navigation({ user, activeTab, onTabChange, tabs }: Navig
               
               {/* User Menu */}
               <div className="relative">
-                <Button variant="ghost" className="flex items-center space-x-2" data-testid="button-user-menu">
+                <Button 
+                  variant="ghost" 
+                  className="flex items-center space-x-2" 
+                  onClick={() => window.location.href = "/api/auth/logout"}
+                  data-testid="button-logout"
+                >
                   <User className="h-5 w-5" />
                   <span className="font-medium">
                     {user?.firstName && user?.lastName 
@@ -98,19 +103,8 @@ export default function Navigation({ user, activeTab, onTabChange, tabs }: Navig
                       : user?.email?.split('@')[0] || 'User'
                     }
                   </span>
-                  <ChevronDown className="h-4 w-4" />
+                  <span className="text-xs text-muted-foreground">Logout</span>
                 </Button>
-                
-                {/* Logout functionality could be implemented here */}
-                <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-md shadow-lg hidden">
-                  <Button 
-                    variant="ghost" 
-                    className="w-full justify-start"
-                    onClick={() => window.location.href = "/api/logout"}
-                  >
-                    Logout
-                  </Button>
-                </div>
               </div>
             </div>
           </div>

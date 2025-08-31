@@ -5,6 +5,7 @@ import {
   notifications,
   type User,
   type UpsertUser,
+  type SignupData,
   type Item,
   type InsertItem,
   type Claim,
@@ -19,6 +20,8 @@ import { eq, desc, and, or, like, sql, gte, lte } from "drizzle-orm";
 export interface IStorage {
   // User operations (required for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
+  getUserByStudentId(studentId: string): Promise<User | undefined>;
+  createUserFromSignup(signupData: SignupData): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
   
   // Item operations
@@ -74,6 +77,26 @@ export class DatabaseStorage implements IStorage {
           ...userData,
           updatedAt: new Date(),
         },
+      })
+      .returning();
+    return user;
+  }
+
+  async getUserByStudentId(studentId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.studentId, studentId));
+    return user;
+  }
+
+  async createUserFromSignup(signupData: SignupData): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        firstName: signupData.firstName,
+        lastName: signupData.lastName,
+        studentId: signupData.studentId,
+        email: signupData.email,
+        password: signupData.password, // Will be hashed in the route handler
+        role: "student",
       })
       .returning();
     return user;

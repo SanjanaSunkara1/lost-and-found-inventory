@@ -31,6 +31,8 @@ export const users = pgTable("users", {
   email: varchar("email").unique(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
+  studentId: varchar("student_id").unique(),
+  password: varchar("password"),
   profileImageUrl: varchar("profile_image_url"),
   role: varchar("role", { enum: ["staff", "student"] }).notNull().default("student"),
   createdAt: timestamp("created_at").defaultNow(),
@@ -175,8 +177,36 @@ export const updateClaimSchema = createInsertSchema(claims).omit({
   updatedAt: true,
 }).partial();
 
+// Custom signup schema with validation
+export const signupSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  studentId: z.string().refine(
+    (val) => /^s\d{6}$/.test(val),
+    "Student ID must start with 's' followed by 6 digits (e.g., s123456)"
+  ),
+  email: z.string().min(1, "Email is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+}).refine(
+  (data) => {
+    const expectedEmail = `${data.studentId}@student.roundrockisd.org`;
+    return data.email === expectedEmail;
+  },
+  {
+    message: "Email must be your student ID followed by @student.roundrockisd.org",
+    path: ["email"],
+  }
+);
+
+export const loginSchema = z.object({
+  studentId: z.string().min(1, "Student ID is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
+export type SignupData = z.infer<typeof signupSchema>;
+export type LoginData = z.infer<typeof loginSchema>;
 export type User = typeof users.$inferSelect;
 export type Item = typeof items.$inferSelect;
 export type InsertItem = z.infer<typeof insertItemSchema>;

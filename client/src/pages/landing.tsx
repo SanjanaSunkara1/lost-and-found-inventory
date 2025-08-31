@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Landing() {
   return (
@@ -14,23 +15,34 @@ export default function Landing() {
           </div>
           
           <div className="space-y-6">
-            <div className="text-center">
+            <div className="text-center space-y-4">
               <p className="text-sm text-muted-foreground mb-4">
                 Access your school Lost & Found inventory system
               </p>
               
-              <Button 
-                onClick={() => window.location.href = "/api/login"}
-                className="w-full"
-                data-testid="button-login"
-              >
-                Sign In with School Account
-              </Button>
+              <Link href="/login" className="block">
+                <Button 
+                  className="w-full"
+                  data-testid="button-login"
+                >
+                  Log In
+                </Button>
+              </Link>
+              
+              <Link href="/signup" className="block">
+                <Button 
+                  variant="outline"
+                  className="w-full"
+                  data-testid="button-signup"
+                >
+                  Create Account
+                </Button>
+              </Link>
             </div>
             
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
-                Don't have an account? Contact the front office.
+                Students: Use your Round Rock ISD student ID to create an account
               </p>
             </div>
           </div>
