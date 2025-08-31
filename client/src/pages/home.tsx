@@ -14,8 +14,6 @@ export default function Home() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "dashboard":
-        return <Dashboard />;
       case "inventory":
         return <Inventory />;
       case "add-item":
@@ -25,7 +23,7 @@ export default function Home() {
       case "analytics":
         return <Analytics />;
       default:
-        return <Dashboard />;
+        return <Dashboard onTabChange={setActiveTab} />;
     }
   };
 
@@ -49,7 +47,7 @@ export default function Home() {
       />
       
       <main className="max-w-7xl mx-auto">
-        {renderContent()}
+        {activeTab === "dashboard" ? <Dashboard onTabChange={setActiveTab} /> : renderContent()}
       </main>
       
       <NotificationToast />

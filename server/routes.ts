@@ -318,6 +318,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/export-report", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user || user.role !== "staff") {
+        return res.status(403).json({ message: "Only staff can export reports" });
+      }
+
+      const items = await storage.getItems();
+      const claims = await storage.getClaims();
+      
+      // Generate CSV content
+      const csvRows = [
+        // Header
+        "Item ID,Item Name,Category,Location,Date Found,Status,Priority,Claims Count,Last Claim Date"
+      ];
+      
+      items.forEach(item => {
+        const itemClaims = claims.filter(claim => claim.itemId === item.id);
+        const lastClaimDate = itemClaims.length > 0 
+          ? Math.max(...itemClaims.map(c => new Date(c.createdAt).getTime()))
+          : null;
+        
+        csvRows.push([
+          item.id,
+          `"${item.name}"`,
+          item.category,
+          item.location,
+          new Date(item.dateFound).toLocaleDateString(),
+          item.status,
+          item.priority,
+          itemClaims.length,
+          lastClaimDate ? new Date(lastClaimDate).toLocaleDateString() : "None"
+        ].join(","));
+      });
+      
+      const csvContent = csvRows.join("\\n");
+      
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", `attachment; filename="lost-found-report-${new Date().toISOString().split('T')[0]}.csv"`);
+      res.send(csvContent);
+    } catch (error) {
+      console.error("Error exporting report:", error);
+      res.status(500).json({ message: "Failed to export report" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // WebSocket server for real-time notifications

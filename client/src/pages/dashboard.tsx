@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -12,9 +12,17 @@ import {
   Download
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
-export default function Dashboard() {
+interface DashboardProps {
+  onTabChange?: (tab: string) => void;
+}
+
+export default function Dashboard({ onTabChange }: DashboardProps) {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   const { data: analytics } = useQuery({
     queryKey: ["/api/analytics"],
@@ -31,6 +39,63 @@ export default function Dashboard() {
   });
 
   const recentItemsSlice = (recentItems as any[])?.slice(0, 3) || [];
+
+  // Archive items mutation
+  const archiveItemsMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("POST", "/api/archive-old-items", { daysOld: 30 });
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Items Archived",
+        description: `Successfully archived ${data.archivedCount} old items`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/items"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/analytics"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Export report function
+  const handleExportReport = async () => {
+    try {
+      const response = await fetch("/api/export-report", {
+        method: "GET",
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to export report");
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `lost-found-report-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "Report Exported",
+        description: "Report has been downloaded successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to export report",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -153,7 +218,7 @@ export default function Dashboard() {
             <CardContent className="space-y-4">
               <Button 
                 className="w-full justify-start" 
-                onClick={() => window.location.hash = "#add-item"}
+                onClick={() => onTabChange?.("add-item")}
                 data-testid="button-add-item"
               >
                 <Plus className="mr-3 h-4 w-4" />
@@ -163,7 +228,7 @@ export default function Dashboard() {
               <Button 
                 variant="secondary" 
                 className="w-full justify-start"
-                onClick={() => window.location.hash = "#claims"}
+                onClick={() => onTabChange?.("claims")}
                 data-testid="button-review-claims"
               >
                 <Eye className="mr-3 h-4 w-4" />
@@ -178,6 +243,8 @@ export default function Dashboard() {
               <Button 
                 variant="outline" 
                 className="w-full justify-start"
+                onClick={() => archiveItemsMutation.mutate()}
+                disabled={archiveItemsMutation.isPending}
                 data-testid="button-archive-items"
               >
                 <Archive className="mr-3 h-4 w-4" />
@@ -187,6 +254,7 @@ export default function Dashboard() {
               <Button 
                 variant="outline" 
                 className="w-full justify-start"
+                onClick={handleExportReport}
                 data-testid="button-export-report"
               >
                 <Download className="mr-3 h-4 w-4" />
