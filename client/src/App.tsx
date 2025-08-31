@@ -15,16 +15,14 @@ function Router() {
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-        </>
+      <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
+      {isLoading ? (
+        <Route path="/" component={() => <div className="min-h-screen flex items-center justify-center">Loading...</div>} />
+      ) : !isAuthenticated ? (
+        <Route path="/" component={Landing} />
       ) : (
-        <>
-          <Route path="/" component={Home} />
-        </>
+        <Route path="/" component={Home} />
       )}
       <Route component={NotFound} />
     </Switch>
