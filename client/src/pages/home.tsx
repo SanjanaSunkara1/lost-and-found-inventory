@@ -6,6 +6,7 @@ import Inventory from "@/pages/inventory";
 import AddItem from "@/pages/add-item";
 import Claims from "@/pages/claims";
 import Analytics from "@/pages/analytics";
+import MyClaims from "@/pages/my-claims";
 import { NotificationToast } from "@/components/notification-toast";
 
 export default function Home() {
@@ -22,6 +23,8 @@ export default function Home() {
         return <Claims />;
       case "analytics":
         return <Analytics />;
+      case "my-claims":
+        return <MyClaims />;
       default:
         return <Dashboard onTabChange={setActiveTab} />;
     }
@@ -30,11 +33,9 @@ export default function Home() {
   const tabs = [
     { id: "dashboard", label: "Dashboard", icon: "chart-pie" },
     { id: "inventory", label: "Inventory", icon: "list" },
-    ...((user as any)?.role === "staff" ? [
-      { id: "add-item", label: "Add Item", icon: "plus" },
-      { id: "claims", label: "Claims", icon: "hand-paper" },
-      { id: "analytics", label: "Analytics", icon: "chart-bar" }
-    ] : [])
+    { id: "add-item", label: "Add Item", icon: "plus" },
+    { id: "my-claims", label: "My Claims", icon: "hand-paper" },
+    { id: "analytics", label: "Analytics", icon: "chart-bar" }
   ];
 
   return (

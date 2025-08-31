@@ -229,6 +229,17 @@ export default function Dashboard({ onTabChange }: DashboardProps) {
             </Button>
             <p className="text-xs text-muted-foreground ml-7">Found something? Add it here to help reunite it with its owner</p>
             
+            <Button 
+              variant="secondary" 
+              className="w-full justify-start"
+              onClick={() => onTabChange?.("my-claims")}
+              data-testid="button-my-claims"
+            >
+              <HandIcon className="mr-3 h-4 w-4" />
+              My Claims
+            </Button>
+            <p className="text-xs text-muted-foreground ml-7">View items you've claimed and pickup locations</p>
+            
           </CardContent>
         </Card>
       </div>
