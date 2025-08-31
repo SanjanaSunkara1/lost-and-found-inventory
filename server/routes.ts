@@ -305,6 +305,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/claims/my-claims", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      const claims = await storage.getClaims({
+        studentId: userId,
+      });
+      
+      res.json(claims);
+    } catch (error) {
+      console.error("Error fetching user claims:", error);
+      res.status(500).json({ message: "Failed to fetch user claims" });
+    }
+  });
+
   app.post("/api/claims", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;

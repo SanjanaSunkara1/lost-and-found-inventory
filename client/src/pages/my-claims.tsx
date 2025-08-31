@@ -8,8 +8,7 @@ export default function MyClaims() {
   const { user } = useAuth();
   
   const { data: claims, isLoading } = useQuery({
-    queryKey: ["/api/claims", "my-claims"],
-    select: (data) => (data as any[])?.filter((claim: any) => claim.studentId === user?.id) || [],
+    queryKey: ["/api/claims/my-claims"],
   });
 
   if (isLoading) {
@@ -64,7 +63,7 @@ export default function MyClaims() {
         </div>
       </div>
 
-      {!claims || claims.length === 0 ? (
+      {!claims || (claims as any[])?.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
             <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -76,7 +75,7 @@ export default function MyClaims() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {claims.map((claim: any) => (
+          {(claims as any[])?.map((claim: any) => (
             <Card key={claim.id} data-testid={`claim-${claim.id}`}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
