@@ -1,4 +1,4 @@
-# High School Lost & Found App
+# High School Lost & Found App 🔎
 
 A digital Lost & Found inventory management system for High Schools, where students and staff can add found items, search the inventory, and claim their lost belongings with real time notifications.
 
