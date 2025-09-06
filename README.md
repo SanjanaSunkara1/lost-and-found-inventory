@@ -2,7 +2,7 @@
 
 A digital Lost & Found inventory management system for High Schools, where students and staff can add found items, search the inventory, and claim their lost belongings with real time notifications.
 
-## Features
+## Features ✨
 
 - **Add Items**: Upload found items with photos, descriptions, and location details
 - **Search & Browse**: Filter items by category, location, and search terms
