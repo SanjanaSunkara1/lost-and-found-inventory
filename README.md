@@ -50,5 +50,5 @@ This is a digital Lost & Found inventory management system for High Schools, whe
 - `/shared` - Shared TypeScript schemas and types
 - `/uploads` - File storage for item photos
 
-## Project Structure
+## Credits
 Created using `AI Assistance`
