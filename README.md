@@ -4,6 +4,7 @@ This is a digital [Lost & Found inventory management system](https://4a00581d-15
 
 ## Features ✨
 
+- **Theme Selection**: Can switch between dark and light mode whenever needed
 - **Add Items**: Upload found items with photos, descriptions, and location details
 - **Search & Browse**: Filter items by category, location, and search terms
 - **Claim System**: Submit claims for lost items with description verification
@@ -12,6 +13,15 @@ This is a digital [Lost & Found inventory management system](https://4a00581d-15
 - **Mobile Friendly**: Responsive design optimized for phones and tablets
 - **School Branding**: Westwood High School theme with burnt orange colors
 - **Secure Authentication**: Replit OpenID Connect login system
+
+
+## Account Setup Instructions
+
+1. **Create Account**: Sign up with a student ID that starts with "s" followed by any 6 digits (e.g., s987654, s555123, s999888)
+2. **Set Password**: Choose a secure password for your account
+3. **Log In**: Use your student ID and password to log into the system
+4. **Start Using**: Once logged in, you can add items, browse inventory, and claim lost belongings
+
 
 ## Tech Stack
 
