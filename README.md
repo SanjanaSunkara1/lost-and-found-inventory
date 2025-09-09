@@ -1,6 +1,6 @@
 # High School Lost & Found App 🔎
 
-This is a digital [Lost & Found inventory management system](https://4a00581d-15fe-401a-a822-dad87b531b0e-00-7ld0kc3a54iu.kirk.replit.dev/) for High Schools, where students and staff can add found items, search the inventory, and claim their lost belongings with real time notifications.
+This is a digital [Lost & Found inventory management system](https://westwood-lostandfound-inventory-sanjana.replit.app) for High Schools, where students and staff can add found items, search the inventory, and claim their lost belongings with real time notifications.
 
 ## Features ✨
 
